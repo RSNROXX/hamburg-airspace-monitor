@@ -1,0 +1,107 @@
+# Hamburg Airspace Monitor: all services, started with `docker compose up -d`.
+name: hamburg-airspace-monitor
+
+# ---------------------------------------------------------------------------
+# Shared settings for the 3 Kafka brokers (YAML anchors avoid copy-paste).
+# ---------------------------------------------------------------------------
+x-kafka-common: &kafka-common
+  image: apache/kafka:4.4.0
+  restart: unless-stopped
+  healthcheck:
+    test: ["CMD-SHELL", "KAFKA_HEAP_OPTS='-Xmx64m' /opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:19092 > /dev/null 2>&1"]
+    interval: 15s
+    timeout: 10s
+    retries: 10
+    start_period: 30s
+
+x-kafka-env: &kafka-env
+  # KRaft: every node is both a broker (stores data) and a controller (votes on cluster metadata).
+  KAFKA_PROCESS_ROLES: broker,controller
+  CLUSTER_ID: ${KAFKA_CLUSTER_ID}
+  KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093
+  # Three doors per broker: PLAINTEXT for containers, CONTROLLER for votes, PLAINTEXT_HOST for the laptop.
+  KAFKA_LISTENERS: PLAINTEXT://:19092,CONTROLLER://:9093,PLAINTEXT_HOST://:9092
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+  KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+  KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+  # Data lives on a Docker volume, so it survives container restarts.
+  KAFKA_LOG_DIRS: /var/lib/kafka/data
+  # Durability: 3 copies, a write needs 2, an out-of-date replica never becomes leader.
+  KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+  KAFKA_MIN_INSYNC_REPLICAS: 2
+  KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: "false"
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
+  # Kafka's own internal topics get the same protection.
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+  KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+  KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+  KAFKA_SHARE_COORDINATOR_STATE_TOPIC_REPLICATION_FACTOR: 3
+  KAFKA_SHARE_COORDINATOR_STATE_TOPIC_MIN_ISR: 2
+  KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+  # Keep messages 7 days (168 hours) so we can replay after an outage.
+  KAFKA_LOG_RETENTION_HOURS: 168
+  # Memory cap per broker (laptop budget).
+  KAFKA_HEAP_OPTS: -Xmx512m -Xms512m
+
+services:
+  kafka-1:
+    <<: *kafka-common
+    hostname: kafka-1
+    container_name: kafka-1
+    ports:
+      - "29092:9092"
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 1
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:19092,PLAINTEXT_HOST://localhost:29092
+    volumes:
+      - kafka-1-data:/var/lib/kafka/data
+
+  kafka-2:
+    <<: *kafka-common
+    hostname: kafka-2
+    container_name: kafka-2
+    ports:
+      - "39092:9092"
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 2
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:19092,PLAINTEXT_HOST://localhost:39092
+    volumes:
+      - kafka-2-data:/var/lib/kafka/data
+
+  kafka-3:
+    <<: *kafka-common
+    hostname: kafka-3
+    container_name: kafka-3
+    ports:
+      - "49092:9092"
+    environment:
+      <<: *kafka-env
+      KAFKA_NODE_ID: 3
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:19092,PLAINTEXT_HOST://localhost:49092
+    volumes:
+      - kafka-3-data:/var/lib/kafka/data
+
+  # One-shot job: creates the topics once all 3 brokers are healthy, then exits.
+  kafka-init:
+    image: apache/kafka:4.4.0
+    container_name: kafka-init
+    restart: "no"
+    depends_on:
+      kafka-1:
+        condition: service_healthy
+      kafka-2:
+        condition: service_healthy
+      kafka-3:
+        condition: service_healthy
+    environment:
+      KAFKA_HEAP_OPTS: -Xmx128m
+    volumes:
+      - ./infra/kafka:/scripts:ro
+    entrypoint: ["/bin/bash", "/scripts/create-topics.sh"]
+
+volumes:
+  kafka-1-data:
+  kafka-2-data:
+  kafka-3-data:
