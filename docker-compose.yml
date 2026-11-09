@@ -43,6 +43,30 @@ x-kafka-env: &kafka-env
   # Memory cap per broker (laptop budget).
   KAFKA_HEAP_OPTS: -Xmx512m -Xms512m
 
+# ---------------------------------------------------------------------------
+# Shared settings for the 3 Cassandra nodes.
+# ---------------------------------------------------------------------------
+x-cassandra-common: &cassandra-common
+  image: cassandra:5.0.9
+  restart: unless-stopped
+  healthcheck:
+    # Healthy = the node answers CQL queries (only true after it has joined the ring).
+    test: ["CMD-SHELL", "cqlsh -e 'DESCRIBE KEYSPACES' > /dev/null 2>&1"]
+    interval: 15s
+    timeout: 10s
+    retries: 20
+    start_period: 60s
+
+x-cassandra-env: &cassandra-env
+  CASSANDRA_CLUSTER_NAME: airspace-cluster
+  # Seeds = the nodes a starting node contacts first to learn about the cluster.
+  CASSANDRA_SEEDS: cassandra-1,cassandra-2
+  # Reads data centre and rack names from the settings below (production-style snitch).
+  CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
+  CASSANDRA_DC: dc1
+  # Memory cap per node (laptop budget). Cassandra 5.0 uses G1, so only MAX_HEAP_SIZE is set.
+  MAX_HEAP_SIZE: 512M
+
 services:
   kafka-1:
     <<: *kafka-common
@@ -101,7 +125,59 @@ services:
       - ./infra/kafka:/scripts:ro
     entrypoint: ["/bin/bash", "/scripts/create-topics.sh"]
 
+  # Cassandra nodes start one after another: two nodes joining the ring at the same time is refused.
+  cassandra-1:
+    <<: *cassandra-common
+    hostname: cassandra-1
+    container_name: cassandra-1
+    environment:
+      <<: *cassandra-env
+      CASSANDRA_RACK: rack1
+    volumes:
+      - cassandra-1-data:/var/lib/cassandra
+
+  cassandra-2:
+    <<: *cassandra-common
+    hostname: cassandra-2
+    container_name: cassandra-2
+    depends_on:
+      cassandra-1:
+        condition: service_healthy
+    environment:
+      <<: *cassandra-env
+      CASSANDRA_RACK: rack2
+    volumes:
+      - cassandra-2-data:/var/lib/cassandra
+
+  cassandra-3:
+    <<: *cassandra-common
+    hostname: cassandra-3
+    container_name: cassandra-3
+    depends_on:
+      cassandra-2:
+        condition: service_healthy
+    environment:
+      <<: *cassandra-env
+      CASSANDRA_RACK: rack3
+    volumes:
+      - cassandra-3-data:/var/lib/cassandra
+
+  # One-shot job: creates the keyspace and tables once all 3 nodes are up, then exits.
+  cassandra-init:
+    image: cassandra:5.0.9
+    container_name: cassandra-init
+    restart: "no"
+    depends_on:
+      cassandra-3:
+        condition: service_healthy
+    volumes:
+      - ./infra/cassandra:/schema:ro
+    entrypoint: ["cqlsh", "cassandra-1", "9042", "-f", "/schema/schema.cql"]
+
 volumes:
   kafka-1-data:
   kafka-2-data:
   kafka-3-data:
+  cassandra-1-data:
+  cassandra-2-data:
+  cassandra-3-data:
