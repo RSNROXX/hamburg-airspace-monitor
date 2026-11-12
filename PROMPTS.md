@@ -4,6 +4,7 @@ Course requirement (Data Management, Lecture 10, slide 22): "If a ChatGPT or a s
 
 - Tool: Claude (claude.ai, Anthropic)
 - Rule for this file: prompts are copied verbatim, not edited or cleaned up. Each entry records what the output was used for.
+- Exception: long pasted terminal output is shortened to a summary in square brackets, e.g. `[docker stats: ...]`; the full outputs that matter are kept in `docs/evidence/`.
 
 ---
 
@@ -505,5 +506,416 @@ can you add the prompts
 ```
 
 **Used for:** Updating this log.
+
+---
+
+## 2026-11-07, Voice session 2 (transcribed automatically; user turns only)
+
+```
+How should I add the prompts.md file because I don't have the um, uh, the project uh, folder ready yet for my GitHub push. So
+```
+
+**Used for:** Creating the project folder and moving PROMPTS.md into it.
+
+---
+
+## 2026-11-07, Prompts 16 to 18 (End of day)
+
+```
+done for today then right or any other imp steps that we have to carry for today
+```
+```
+Ok bruder, bis morgen
+Und ja, ich wunchte schones Diwalifest
+```
+```
+Klar ciao
+```
+
+**Used for:** Wrap-up and next-day plan.
+
+---
+
+## 2026-11-08, Prompts 19 to 21 (Plan document, dashboard choice)
+
+```
+I am back for todays task.
+And yes wish you a happy Diwali today
+```
+```
+I have worked on streamlit before so I can work again for this project
+I dont know much about grafana but could try it out, also you have pointed compatability issue of Grafana as well, which I dont want to dwell into just for dashboard.
+
+I will read the rest from design rules tomorrow and will complete the project as well or as much we have planed for monday
+```
+```
+gn
+```
+
+**Used for:** Writing the project plan document; recording the decision for Streamlit.
+
+---
+
+## 2026-11-09, Prompts 22 to 27 (Machine check, memory usage)
+
+```
+I am back and reading the project plan right now
+```
+```
+rsnroxx@rsnroxx-pred-ubuntu:~$ ls ~/projects/hamburg-airspace-monitor
+free -h
+PROMPTS.md
+               total        used        free      shared  buff/cache   available
+Mem:            14Gi       8.9Gi       927Mi       2.2Gi       7.1Gi       5.9Gi
+Swap:          4.0Gi       984Ki       4.0Gi
+rsnroxx@rsnroxx-pred-ubuntu:~$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            14Gi       8.9Gi       978Mi       2.1Gi       7.0Gi       5.9Gi
+Swap:          4.0Gi       984Ki       4.0Gi
+rsnroxx@rsnroxx-pred-ubuntu:~$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            14Gi       8.9Gi       977Mi       2.1Gi       7.0Gi       5.9Gi
+Swap:          4.0Gi       984Ki       4.0Gi
+rsnroxx@rsnroxx-pred-ubuntu:~$
+```
+```
+rsnroxx@rsnroxx-pred-ubuntu:~$ ps aux --sort=-%mem | head -6
+[output: top 5 processes by memory: Brave renderer 8.9%, Claude desktop renderer 4.7%, Claude desktop 3.9%, Brave 3.5%, Spotify 3.5%; full command lines omitted from this log because they contain only browser internals]
+```
+```
+rsnroxx@rsnroxx-pred-ubuntu:~$ ps -C brave -o rss= | awk '{s+=$1} END {printf "%.1f GB\n", s/1024/1024}'
+6.7 GB
+rsnroxx@rsnroxx-pred-ubuntu:~$
+```
+```
+rsnroxx@rsnroxx-pred-ubuntu:~$ free -h
+               total        used        free      shared  buff/cache   available
+Mem:            14Gi       4.2Gi       5.6Gi       1.0Gi       6.0Gi        10Gi
+Swap:          4.0Gi       984Ki       4.0Gi
+rsnroxx@rsnroxx-pred-ubuntu:~$
+```
+```
+ready for exeuction, plans seems good because all the plans that we discussed seems to be in the project plan
+```
+
+**Used for:** Measuring free memory before starting the cluster (closing the browser freed about 4 GB).
+
+---
+
+## 2026-11-09, Prompts 28 to 29 (Kafka image, cluster ID, GitHub SSH)
+
+```
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ docker pull apache/kafka:4.4.0
+docker run --rm apache/kafka:4.4.0 /opt/kafka/bin/kafka-storage.sh random-uuid
+[docker pull progress lines]
+Digest: sha256:833b867a9585a141da455dc2b57431c65cbccb27f11c91f694444cca9f777e0f
+Status: Downloaded newer image for apache/kafka:4.4.0
+docker.io/apache/kafka:4.4.0
+PgdMjCbiRVm1_YI81XqvVQ
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ 
+
+
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ ssh -T git@github.com
+The authenticity of host 'github.com (140.82.121.3)' can't be established.
+ED25519 key fingerprint is: SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU
+This key is not known by any other names.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'github.com' (ED25519) to the list of known hosts.
+git@github.com: Permission denied (publickey).
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$
+```
+```
+why is the Kafka message key the aircraft ID and not, say, a random number?
+because we dont want the count of re-written info too so we have aircraft id so that we skip duplicates too
+```
+
+**Used for:** Writing the Kafka part of docker-compose.yml and the topic script; explanation of the message key.
+
+---
+
+## 2026-11-09, Prompt 30 (Concept questions, glossary)
+
+```
+so the dockers volume is different than cassandras flush storage but have similar function to store old data and also if the container restarts we have data stored in storage and not in RAM?
+
+topic comes under docker for example category of books right?
+
+we have all 3 services of kafka that are 3 dockers which are plaintext for containers controller for votes and plaintext_host for laptop each runnign at different ports right? or I am merging 2 things up! 
+Ok now I get it using advestised listerners we have address the brokers gives to the clients to communicate with it.
+
+for head opts why we have 2 -Xmx512m in the same line?
+
+restart no doesnt restart again after starting, starting what though? Kafka initiation or Docker container?
+
+we created 2 topics main stream and dead pile correct?!
+
+Can you make a glossary so that I can keep reading it until tomorrow!
+```
+
+**Used for:** Glossary document; explanations of volumes, topics, listeners, heap options, restart policy.
+
+---
+
+## 2026-11-09, Prompts 31 to 39 (Kafka cluster running, failover test, GitHub)
+
+```
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ docker compose up -d
+docker compose ps
+[compose output: network, 3 volumes created; kafka-1, kafka-2, kafka-3 Healthy; kafka-init Started]
+[docker compose ps: kafka-1, kafka-2, kafka-3 Up (healthy) on ports 29092, 39092, 49092]
+
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ docker compose logs kafka-init
+docker stats --no-stream
+[kafka-init: Created topic adsb.positions. Created topic adsb.dlq. Topic descriptions: 6 and 3 partitions, replication factor 3, all replicas in sync]
+[docker stats: kafka-1 474.2MiB, kafka-2 440.8MiB, kafka-3 468.5MiB]
+```
+```
+I have the 1:1 tomorrow at 10am I will finish everything today and dont want to keep anything for tomorrow, dont rush things I dont want anything left just because 1:1 is around 24hrs from now, I want everything that we decide to be done by today. 
+
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ ssh-keygen -t ed25519 -C "rsnroxx-pred-ubuntu"
+cat ~/.ssh/id_ed25519.pub
+Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/rsnroxx/.ssh/id_ed25519): 
+Enter passphrase for "/home/rsnroxx/.ssh/id_ed25519" (empty for no passphrase): 
+
+what to do here though?
+```
+```
+done, I got Hi RSNROXX which you said that should pop up
+```
+```
+give me description for the repo
+
+also what to do for failover test? do I have to ans the question because above next code block it says "then run"
+```
+```
+we stop the write operation and read is only done, so we dont lose data. partition 2 and 3 will have a vote and one who has latest data will the the new leader. ISR will show new leader and also active partitions
+```
+```
+[terminal output of the failover test: docker stop kafka-2, topic description with broker 2 out of the ISR and partitions 2 and 3 led by broker 3; docker start kafka-2, topic description with all replicas back in sync. Full output saved in docs/evidence/failover-2026-11-09.md]
+```
+```
+[terminal output: topic description after automatic rebalancing, partitions 2 and 3 led by broker 2 again. Full output saved in docs/evidence/failover-2026-11-09.md]
+```
+```
+can you build the file for failover proof, we could even put it in repo readme file later
+```
+```
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.env.example
+	.gitignore
+	PROMPTS.md
+	docker-compose.yml
+	docs/
+	infra/
+
+nothing added to commit but untracked files present (use "git add" to track)
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$
+```
+```
+its there on github, checked the link on github
+```
+
+**Used for:** SSH key setup, failover test and its evidence file, first commit and push.
+
+---
+
+## 2026-11-09, Prompt 40 (Cassandra questions, story of the system)
+
+```
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ mkdir -p infra/cassandra
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ mv ~/Downloads/docker-compose.yml .
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ mv ~/Downloads/schema.cql infra/cassandra/
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ docker compose config --quiet && echo OK
+OK
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ 
+
+didnt get seeds, please explain like I am a 5 year old
+
+snitch is in par with gossip, what i mean to say is that gossip is talking about something and snitch is giving up info, which is almost the same concept here.
+
+what does kafka expose?
+
+here we have said no counter column because counting is done by rows, and also to avoid duplications right? and versioning is seen here?
+
+I ran the docker compose up -d command, why did container cassandra 1 2 3 took so much seconds, 65 106 and 147+(as of now 147 but still going on) seconds  
+
+also could you make a small video or story so that I am able to understand the entire system clearly so that I am prepared for tomorrow, review your output few times  and see to it that there are not complex terms and wordings to it..
+```
+
+**Used for:** Cassandra part of docker-compose.yml and schema.cql; story document; explanations of seeds, snitch, ports, counters, start-up times.
+
+---
+
+## 2026-11-09, Prompts 41 to 43 (Cassandra verification, 1:1 preparation)
+
+```
+[docker compose up -d output: cassandra images pulled; cassandra-1 Healthy 65.8s, cassandra-2 Healthy 103.8s, cassandra-3 Healthy 184.3s; cassandra-init and kafka-init Started]
+```
+```
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ docker compose logs cassandra-init
+docker exec cassandra-1 nodetool status airspace
+docker exec cassandra-1 cqlsh -k airspace -e "DESCRIBE TABLES"
+docker stats --no-stream
+Datacenter: dc1
+===============
+Status=Up/Down
+|/ State=Normal/Leaving/Joining/Moving
+--  Address     Load        Tokens  Owns (effective)  Host ID                               Rack 
+UN  172.18.0.6  115.63 KiB  16      100.0%            122a37db-7768-4f66-8a9f-3d109a038b67  rack2
+UN  172.18.0.7  115.56 KiB  16      100.0%            b5b6d9fe-b29f-4974-987d-1a9d5a345762  rack3
+UN  172.18.0.5  98.07 KiB   16      100.0%            94b14c4d-82ab-4063-9088-7af4c7958f54  rack1
+
+
+alerts_by_day  batch_stats_by_day  movements_by_day  positions_by_aircraft
+
+[docker stats: cassandra-1 946.1MiB, cassandra-2 916.1MiB, cassandra-3 958.8MiB, kafka-1 523.2MiB, kafka-2 378MiB, kafka-3 548.6MiB]
+```
+```
+can you give me the flow for tomorrow how I should intro, give out my knowledge to prof also what commands to run and what to show him and what things should I explain to him verbally. also should I use the story that you have given me for my explaination as well or something different
+```
+
+**Used for:** Run sheet for the 1:1 meeting.
+
+---
+
+## 2026-11-10, Prompts 44 to 47 (Before and during the 1:1)
+
+```
+[terminal output: curl to adsb.lol showing 408 aircraft; docker compose ps with all 6 nodes healthy; topic description with all 6 partitions led by broker 1; nodetool status with 3 nodes Up/Normal]
+
+
+before 1:1
+```
+```
+what is processor?
+```
+```
+so do we re evaluate the crash after we store the data in cassandra?
+```
+```
+Isr full form?
+```
+
+**Used for:** Triggering a preferred leader election before the demo; explanations of the processor, commit order and ISR.
+
+---
+
+## 2026-11-11, Prompt 48 (Resuming)
+
+```
+I am back to continue with the remaining steps
+lets complete this project asap now with proper understanding
+```
+
+**Used for:** Writing and testing the producer, its Dockerfile, and adding the producer and Kafka UI to docker-compose.yml.
+
+---
+
+## 2026-11-11, Prompt 49 (Professor's feedback, producer questions)
+
+```
+1:1, sir liked the idea and he said if the dashboard will be live, for example will be showing us data every 5 seconds of polling, because circling is not possible every 5 seconds so how will the dashboard look like?
+
+he has said about indempodence, duplication how will you handle so I suggest cassandra db with versioning and also no counter so that we dont re read the same info again and again if the api sends them...
+
+also asked me what if your service or app goes down, what are the safe guards or safety measures how will you handle them... just said this and I asked for what exactly, he said, could be anything, I didnt said about if 1 broker crash or if node is full or anything like that because I too am not sure what exactly is his question, that is my fault...
+
+also said after the system is back, how will my system be on paar with api data, how will it handle the latency?
+
+for code explain all the parts like I am a 5 year old so that I can grasp everything easily and in 1 go because I dont want to be unsure about anything...
+
+what is the message building? and why are we testing it offline 1st?
+
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ mv ~/Downloads/producer.py ~/Downloads/Dockerfile ~/Downloads/requirements.txt producer/
+mv: target 'producer/': No such file or directory
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ mkdir -p producer
+mv ~/Downloads/docker-compose.yml .
+mv ~/Downloads/producer.py ~/Downloads/Dockerfile ~/Downloads/requirements.txt producer/
+docker compose config --quiet && echo OK
+mv: cannot stat '/home/rsnroxx/Downloads/docker-compose.yml': No such file or directory
+OK
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ ls -l
+total 44
+-rw-rw-r-- 1 rsnroxx rsnroxx 22900 Nov  7 22:36 PROMPTS.md
+-rw-rw-r-- 1 rsnroxx rsnroxx  7236 Nov 11 17:01 docker-compose.yml
+drwxrwxr-x 3 rsnroxx rsnroxx  4096 Nov  9 20:41 docs
+drwxrwxr-x 4 rsnroxx rsnroxx  4096 Nov  9 20:49 infra
+drwxrwxr-x 2 rsnroxx rsnroxx  4096 Nov 11 17:02 producer
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor$ cd producer
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor/producer$ ls -l
+total 16
+-rw-rw-r-- 1 rsnroxx rsnroxx  454 Nov 11 17:01 Dockerfile
+-rw-rw-r-- 1 rsnroxx rsnroxx 6345 Nov 11 17:01 producer.py
+-rw-rw-r-- 1 rsnroxx rsnroxx   41 Nov 11 17:01 requirements.txt
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor/producer$ 
+
+
+what is now and ac in data?
+
+fetch(session) handles error between containers and api right?
+
+in the main why do we have messages send in batches instead of streaming? Because the project is based on stream data type?
+
+what do you mean by politely ask a free api?
+
+fetch fail is the one you said that our dashboard will present if something is off in the backend right?
+we try and except and at the end we have the default of 1 for fetch session, correct?
+
+I am still thinking of the question my prof said, polling for 5 secound, should be shorten the rate of time of the api messages? or 5 is optimal in this scenario given by the test we did 2 days ago?
+
+for buffererror why do we drain, why can we store it and when kafka is back all the stored can be read. 
+
+why do we have different docker file for producer?
+
+1. Why does the producer pass the raw fields on unchanged instead of cleaning them?
+no idea
+2. What does `producer.flush()` wait for, and what would go wrong without it?
+no idea
+3. If adsb.lol is down for 3 minutes, roughly what does the producer log show?
+->api is down
+
+i have to install confluent_kafka, shows error in my code file, how to install it and why does my source bin script activation doesnt run?
+```
+
+**Used for:** Answers to the professor's four questions (dashboard design with a turn watchlist, duplicates, safeguards, catch-up and latency); explanations of the producer code; virtual environment setup.
+
+---
+
+## 2026-11-11, Prompts 50 to 52 (Producer running)
+
+```
+is processor same as consumer, because in the detect table you have said if processor goes down then consumer's lag will rise. I didnt get this because processor instructions for the whole pipeline right?
+
+because our data is processed as it arrives out pipeline handles stream data type, correct? Batch but with rate of 50 ms which brings all the lastest messages. 
+
+makes sense for being polite because this is a free volunteer.
+
+for 5 seconds, after everything, we will change to 3 then 7 and then 10, will see choose the most optimal one for the pipeline. 
+
+understand that if the waiting room itself if full then the buffererror occurs. 
+
+keeping raw fields for safety and flush() waits for for all the messages are send through, correct?
+
+rsnroxx@rsnroxx-pred-ubuntu:~/projects/hamburg-airspace-monitor/producer$ cd ~/projects/hamburg-airspace-monitor
+grep -c -E "producer:|kafka-ui:" docker-compose.yml
+3
+
+why havent we created a virtual env though in the 1st place? our prof says always start with this step for production level projects. We didnt do this because python env is not needed?
+```
+```
+[screenshot of Kafka UI: topic adsb.positions with 6 partitions, replication factor 3, 0 under-replicated partitions, 18 of 18 in-sync replicas, 2694 messages]
+```
+```
+also update prompt.md file
+```
+
+**Used for:** Explanations of consumer vs processor, streaming, virtual environments; reading the Kafka UI screenshot; this log update.
 
 ---

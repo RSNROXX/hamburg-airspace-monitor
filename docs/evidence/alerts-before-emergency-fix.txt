@@ -1,0 +1,42 @@
+
+ alert_time                      | alert_type | flight  | detail
+---------------------------------+------------+---------+---------------------------------------------------
+ 2026-11-12 20:24:41.000000+0000 |   circling | ALTAS01 | turned 366 degrees to the right within 10 minutes
+ 2026-11-12 20:24:30.000000+0000 |  emergency | EJU49HX |                         emergency status: minfuel
+ 2026-11-12 20:23:25.000000+0000 |  emergency |  BEL6NX |                         emergency status: minfuel
+ 2026-11-12 18:52:07.000000+0000 |   circling | ATLAS01 | turned 363 degrees to the right within 10 minutes
+ 2026-11-12 18:39:41.000000+0000 |   circling | PRIMR08 |  turned 363 degrees to the left within 10 minutes
+ 2026-11-12 18:38:05.000000+0000 |  emergency |  DLA253 |                       emergency status: lifeguard
+ 2026-11-12 18:38:01.000000+0000 |  emergency | CXI13MC |                           emergency status: nordo
+ 2026-11-12 18:27:25.000000+0000 |   circling | ATLAS01 | turned 366 degrees to the right within 10 minutes
+ 2026-11-12 18:27:20.000000+0000 |   circling |    GFD4 |  turned 373 degrees to the left within 10 minutes
+ 2026-11-12 18:24:01.000000+0000 |   circling | SAS2135 | turned 369 degrees to the right within 10 minutes
+ 2026-11-12 18:15:54.000000+0000 |  emergency |  KLM75R |                           emergency status: nordo
+ 2026-11-12 18:14:17.000000+0000 |   circling | GNY4525 | turned 360 degrees to the right within 10 minutes
+ 2026-11-12 18:06:25.000000+0000 |  emergency | AUA166D |                         emergency status: minfuel
+ 2026-11-12 18:03:16.000000+0000 |   circling | GNY4525 | turned 363 degrees to the right within 10 minutes
+ 2026-11-12 18:02:07.000000+0000 |   circling | ATLAS01 | turned 373 degrees to the right within 10 minutes
+ 2026-11-12 17:58:08.000000+0000 |   circling |   DEAPR |  turned 541 degrees to the left within 10 minutes
+ 2026-11-12 17:51:10.000000+0000 |  emergency |  EWG007 |                         emergency status: general
+ 2026-11-12 17:47:08.000000+0000 |   circling |   DEAPR |  turned 367 degrees to the left within 10 minutes
+ 2026-11-12 17:43:21.000000+0000 |  emergency | NJE773P |                          emergency status: downed
+ 2026-11-12 17:42:40.000000+0000 |   circling | GNY4525 | turned 365 degrees to the right within 10 minutes
+ 2026-11-12 17:31:05.000000+0000 |   circling | ATLAS01 |  turned 363 degrees to the left within 10 minutes
+ 2026-11-12 17:16:21.000000+0000 |  emergency | AIC2029 |                        emergency status: reserved
+ 2026-11-12 17:12:15.000000+0000 |  emergency |  KLC32E |                          emergency status: downed
+ 2026-11-12 17:11:23.000000+0000 |  emergency |  CFG9VJ |                        emergency status: unlawful
+ 2026-11-12 17:11:07.000000+0000 |   circling |   DEDRP |  turned 636 degrees to the left within 10 minutes
+ 2026-11-12 17:00:04.000000+0000 |   circling |   DEDRP |  turned 369 degrees to the left within 10 minutes
+ 2026-11-12 16:58:35.000000+0000 |  emergency |  DLH03A |                       emergency status: lifeguard
+ 2026-11-12 16:58:20.000000+0000 |  emergency | MMD9192 |                       emergency status: lifeguard
+ 2026-11-12 16:54:17.000000+0000 |   circling | GNY4525 | turned 360 degrees to the right within 10 minutes
+ 2026-11-12 16:33:44.000000+0000 |  emergency |  KLC35U |                       emergency status: lifeguard
+ 2026-11-12 16:04:02.000000+0000 |   circling |   DECAE |  turned 371 degrees to the left within 10 minutes
+ 2026-11-12 16:03:28.000000+0000 |   circling |   DEDDG | turned 366 degrees to the right within 10 minutes
+ 2026-11-12 16:02:45.000000+0000 |   circling |   DEAPR |  turned 465 degrees to the left within 10 minutes
+ 2026-11-12 16:02:45.000000+0000 |   circling |   NCG06 |  turned 767 degrees to the left within 10 minutes
+ 2026-11-12 16:02:44.000000+0000 |   circling |   DEFXC | turned 565 degrees to the right within 10 minutes
+ 2026-11-12 16:02:43.000000+0000 |   circling |   DEFXS | turned 628 degrees to the right within 10 minutes
+ 2026-11-12 16:02:43.000000+0000 |   circling |   DERWP | turned 989 degrees to the right within 10 minutes
+
+(37 rows)

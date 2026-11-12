@@ -13,4 +13,4 @@ venv/
 .DS_Store
 
 # Logs
-*.log
+*.log*.tar.gz

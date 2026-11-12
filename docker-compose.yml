@@ -73,7 +73,7 @@ services:
     hostname: kafka-1
     container_name: kafka-1
     ports:
-      - "29092:9092"
+      - "127.0.0.1:29092:9092"   # reachable only from this laptop
     environment:
       <<: *kafka-env
       KAFKA_NODE_ID: 1
@@ -86,7 +86,7 @@ services:
     hostname: kafka-2
     container_name: kafka-2
     ports:
-      - "39092:9092"
+      - "127.0.0.1:39092:9092"   # reachable only from this laptop
     environment:
       <<: *kafka-env
       KAFKA_NODE_ID: 2
@@ -99,7 +99,7 @@ services:
     hostname: kafka-3
     container_name: kafka-3
     ports:
-      - "49092:9092"
+      - "127.0.0.1:49092:9092"   # reachable only from this laptop
     environment:
       <<: *kafka-env
       KAFKA_NODE_ID: 3
@@ -173,6 +173,78 @@ services:
     volumes:
       - ./infra/cassandra:/schema:ro
     entrypoint: ["cqlsh", "cassandra-1", "9042", "-f", "/schema/schema.cql"]
+
+  # Polls adsb.lol and publishes one message per aircraft into Kafka.
+  producer:
+    build: ./producer
+    container_name: producer
+    restart: unless-stopped
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully   # topics must exist first
+    environment:
+      KAFKA_BOOTSTRAP: kafka-1:19092,kafka-2:19092,kafka-3:19092
+      KAFKA_TOPIC: adsb.positions
+      CENTER_LAT: "53.63"
+      CENTER_LON: "9.99"
+      RADIUS_NM: "250"
+      POLL_INTERVAL_S: "5"
+
+  # Reads from Kafka, validates and cleans, stores in Cassandra, detects circling and emergencies.
+  # No container_name: several copies can run at once (docker compose up -d --scale processor=3).
+  processor:
+    build: ./processor
+    restart: unless-stopped
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+      cassandra-init:
+        condition: service_completed_successfully    # tables must exist first
+    environment:
+      KAFKA_BOOTSTRAP: kafka-1:19092,kafka-2:19092,kafka-3:19092
+      KAFKA_TOPIC: adsb.positions
+      KAFKA_DLQ_TOPIC: adsb.dlq
+      KAFKA_GROUP_ID: processor
+      CASSANDRA_HOSTS: cassandra-1,cassandra-2,cassandra-3
+      CASSANDRA_KEYSPACE: airspace
+      CASSANDRA_DC: dc1
+      POLL_INTERVAL_S: "5"
+
+  # Streamlit dashboard: http://localhost:8501. Reads only from Cassandra.
+  dashboard:
+    build: ./dashboard
+    container_name: dashboard
+    restart: unless-stopped
+    depends_on:
+      cassandra-init:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:8501:8501"
+    environment:
+      CASSANDRA_HOSTS: cassandra-1,cassandra-2,cassandra-3
+      CASSANDRA_KEYSPACE: airspace
+      CASSANDRA_DC: dc1
+      REFRESH_S: "10"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8501/_stcore/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # Web interface for watching brokers, topics, messages and consumer lag: http://localhost:8080
+  kafka-ui:
+    image: ghcr.io/kafbat/kafka-ui:v1.5.0
+    container_name: kafka-ui
+    restart: unless-stopped
+    depends_on:
+      kafka-init:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: airspace
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-1:19092,kafka-2:19092,kafka-3:19092
 
 volumes:
   kafka-1-data:

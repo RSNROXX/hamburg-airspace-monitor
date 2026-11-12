@@ -92,3 +92,26 @@ CREATE TABLE IF NOT EXISTS airspace.batch_stats_by_day (
   PRIMARY KEY ((day), batch_time, kafka_partition, first_offset)
 ) WITH CLUSTERING ORDER BY (batch_time DESC, kafka_partition ASC, first_offset ASC)
   AND default_time_to_live = 604800;
+
+-- Q: Which aircraft are in the air right now, where, and how much has each turned?
+-- (live map and the "turn watchlist" on the dashboard)
+-- Time bucketing: one partition per minute. The dashboard reads only the current and
+-- previous minute, so old partitions are never read again and simply expire after 1 hour.
+CREATE TABLE IF NOT EXISTS airspace.live_by_minute (
+  minute       timestamp,
+  hex          text,
+  flight       text,
+  lat          double,
+  lon          double,
+  alt_baro_ft  int,
+  on_ground    boolean,
+  gs_kt        double,
+  track_deg    double,
+  turn_deg     double,     -- signed turn over the last 10 minutes (+ right, - left)
+  squawk       text,
+  emergency    text,
+  pos_time     timestamp,
+  category     text,       -- ADS-B emitter category, e.g. A3 = large aircraft, A7 = helicopter
+  is_airliner  boolean,    -- decided by the processor: aircraft type first, category as fallback
+  PRIMARY KEY ((minute), hex)
+) WITH default_time_to_live = 3600;

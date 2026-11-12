@@ -19,3 +19,9 @@ SEVEN_DAYS_MS=604800000
 echo "Topics ready:"
 "$TOPICS" --bootstrap-server "$BOOTSTRAP" --describe --topic adsb.positions
 "$TOPICS" --bootstrap-server "$BOOTSTRAP" --describe --topic adsb.dlq
+
+# After a restart, the first broker up leads every partition. Hand each partition back
+# to its preferred leader now instead of waiting for Kafka's 5-minute check.
+# "|| true": if leadership is already balanced the tool reports it, which is not an error for us.
+/opt/kafka/bin/kafka-leader-election.sh --bootstrap-server "$BOOTSTRAP" \
+  --election-type preferred --all-topic-partitions || true
