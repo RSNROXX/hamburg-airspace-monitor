@@ -205,3 +205,29 @@ Scale the processor with `docker compose up -d --scale processor=3`. Up to 6 ins
 - The airliner type list is maintained by hand and covers the common Airbus, Boeing, Embraer, Bombardier, ATR and Dash 8 types.
 - No authentication or encryption between services. Ports are published on localhost only.
 
+
+## Future work
+
+Each item comes from a limitation above or from what the live data showed during development.
+
+**Reliability and scale**
+- Run brokers and Cassandra nodes on separate machines in different racks, and separate the KRaft controllers from the brokers.
+- Add a second source (for example OpenSky Network) as a fallback when adsb.lol is down or rate limited, and merge the two streams by aircraft ID.
+- Scale the processor automatically when consumer lag stays above a threshold.
+- Test the two-failure scenarios live: two brokers down and two Cassandra nodes down.
+
+**Detection quality**
+- Replace the hand-written airliner type list with a maintained aircraft type database.
+- Detect real holding patterns (the racetrack shape near published holding points) instead of any full circle.
+- Measure the alert rules against a labelled sample of real holdings, to report precision and recall instead of examples.
+- Add go-arounds (an aborted landing followed by a climb) as a further early sign of congestion.
+
+**Operations**
+- Send alerts to operators (e-mail, chat or a webhook) instead of showing them only on the dashboard.
+- Collect metrics with Prometheus and set alerts on consumer lag, latency and source errors.
+- Add authentication and encryption between services.
+- Run the tests automatically on every push with GitHub Actions.
+
+**Analysis**
+- Keep longer history in a separate store for daily and weekly congestion reports per airport.
+- Compare traffic and holding against weather data to separate weather delays from capacity delays.
