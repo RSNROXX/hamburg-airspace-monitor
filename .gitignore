@@ -12,5 +12,6 @@ venv/
 .idea/
 .DS_Store
 
-# Logs
-*.log*.tar.gz
+# Logs and archives
+*.log
+*.tar.gz
