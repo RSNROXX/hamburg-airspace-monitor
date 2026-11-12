@@ -919,3 +919,193 @@ also update prompt.md file
 **Used for:** Explanations of consumer vs processor, streaming, virtual environments; reading the Kafka UI screenshot; this log update.
 
 ---
+
+## 2026-11-12, Prompts 53 to 56 (Processor running, circling filter)
+
+```
+[terminal output: batch_stats_by_day count = 645 for 2026-11-12; alerts_by_day showing 10 circling alerts, all helicopters and light aircraft (e.g. DHRUM, DELUP, PHAMC, BPO160)]
+```
+```
+yes lets go ahead with option a
+```
+```
+we are focusing on airplanes and helis and emergency airlines are real data but not what we want to look at for this project
+
+[terminal output: tar could not open update-dashboard.tar.gz; ALTER TABLE reported that column 'category' already exists; "no such service: dashboard"]
+```
+```
+[terminal output: DESCRIBE TABLE airspace.live_by_minute, showing 14 columns including category text]
+```
+
+**Used for:** Limiting circling alerts to airliner-sized aircraft; writing the Streamlit dashboard (data.py, app.py, Dockerfile, tests) and adding it to docker-compose.yml.
+
+---
+
+## 2026-11-12, Prompts 57 to 59 (Dashboard review, false emergencies, airliner detection)
+
+```
+[screenshot: dashboard top with 309 aircraft, 61.0 messages per second, latency p50 1.5 s and p95 7.6 s, map and turn watchlist]
+```
+```
+[screenshot: dashboard alerts, traffic pulse, data quality and throughput charts; alerts included emergency statuses "downed", "unlawful" and "lifeguard" and circling alerts for light aircraft]
+
+[Kafka UI message for flight DLH8CP: type A321, category A3]
+
+We will solve the issues then jump to fail cases
+```
+```
+[Kafka UI message for flight DLH8C: type A321, category A0]
+
+I believe this is the correct JSON
+
+[terminal output: grep -c counts_for_circling processor.py = 1; alerts saved to docs/evidence/alerts-before-emergency-fix.txt]
+
+so is 'downed' a check message or something?
+
+why not have multiple decimals, upto 4 places in dead letter records? then we could have more accurate results.
+
+what do we mean by throughput line dropped at the end? I thought because the 5 seconds didnt hit thats why the line was flat for 3 and 4 seconds/
+```
+
+**Used for:** Emergency alerts now need 3 positions within 2 minutes and ignore "lifeguard"; airliners identified by aircraft type first, category as fallback; dashboard shows 2 decimals for validity and only whole minutes in the charts.
+
+---
+
+## 2026-11-12, Prompts 60 to 63 (Archives, Git mistake and fix)
+
+```
+why do we have so many tar gz files, should I delete the old ones? and what is the purpose of these files? does it change the code or the query of input from api?
+
+we changed to whole minute because we dont want to mislead our visualization correct?
+```
+```
+by mistake I added a tar.gz file in my project, and I commit the repo
+```
+```
+[terminal output: git rm --cached processor-fix-categories.tar.gz, commit --amend, then git push rejected as non-fast-forward]
+```
+```
+[terminal output: git push --force-with-lease succeeded; tail of .gitignore showed "*.log*.tar.gz" on one line; working tree clean]
+```
+
+**Used for:** Removing an archive from the repository and its history; repairing .gitignore.
+
+---
+
+## 2026-11-12, Prompts 64 to 69 (Watchlist design, screenshots)
+
+```
+[screenshot: dashboard with 259 aircraft, 2 alerts, watchlist led by non-airliners at more than 360 degrees]
+
+[terminal output: live_by_minute has column is_airliner boolean]
+```
+```
+I am not sure about the watchlist, having option A is good and shows that the dashboard is live, but I dont know about having just airplnes, this would be the best option because our objective is for airplanes but if we only have them then dashboard wont be much dynamic I guess. what do you think given that you know the objective?
+
+I am not adding log and tar gz in gitignore because I did it by mistake and it wont happen again, if I add them they would be redundant for the project or as a repo.
+
+I will now run the failure casses and let me know when to take ss for these so that I can have them pastes in the readme file like we had done for statistics and machine learning project. to take ss for all the imp milestones that we hit, I have to say that I did forgot earlier, but now we can start to implement it again for failure cases, which gives not just my prof a clear perspective but also others who will be seeing my repo potentially a recruiter.
+
+also another thing, do I have to memorize these commands for failure cases
+```
+```
+[.gitignore snippet with "# logs", "*.log" and "*.tar.gz" on separate lines]
+
+this is correct right?
+
+for ss give me the best production level ss names and tags so that when I will be uploading to the readme file I have the name and be quick with readme file editing
+```
+```
+The table is good, but I want you to tell me, just like you have been doing for the actions, cautions action for you. I want the same, similar with a camera and a screenshot. We take a screenshot kind of a thing with the same of what we say, file name.
+```
+```
+ohh wait we had to go with option b before we begin with ss right?
+I already took ss till 05.
+```
+```
+do I will now continue with failure cases
+```
+
+**Used for:** Watchlist changed to airliners only; screenshot file names and alt texts; test plan with screenshot points.
+
+---
+
+## 2026-11-12, Prompts 70 to 85 (Failure tests on the live stream)
+
+```
+[terminal output, Test A: kafka-2 stopped; producer "0 not yet confirmed", total delivered 907668, failed 0; processor batches continuing]
+```
+```
+I did take the sshots after stopping the broker-2
+```
+```
+[terminal output, Test B: processor batches continuing with a warning that Cassandra node 172.18.0.3 could not be reached]
+```
+```
+[terminal output: "nodetool: command not found"]
+
+I didnt ran the code between 08 and 09 ss
+```
+```
+what is un and dn mean?
+```
+```
+[terminal output: nodetool status with one node DN and two UN]
+```
+```
+[terminal output: nodetool status with all three nodes UN]
+
+I am about to continue with failure cases now
+```
+```
+[3 screenshots, Test C: dashboard "No new data since 22:36:36 (34 s ago)"; Kafka UI consumer group processor with state EMPTY and total lag 2692; dashboard after 132 s with 0 aircraft]
+
+what do you think before I revive the processor
+```
+```
+[attached log, 740 lines: consumer group lag of 9,598 before restart; full processor log including the catch-up of 20 batches of 500 messages in about 2.5 seconds]
+```
+```
+[screenshot: throughput chart without a hole and latency p95 chart with a spike to about 215 s]
+```
+```
+[terminal output: producer warnings "429 Client Error: Too Many Requests", 32 warnings in 10 minutes]
+```
+```
+[terminal output after changing POLL_INTERVAL_S to 7: 0 warnings, one poll every 7 seconds]
+```
+```
+I didnt take 12 ss
+```
+```
+Do I have to take a ss from kafka UI before test D?
+```
+```
+[terminal output: consumer group lag after catch-up, 177 in total, one active consumer]
+```
+```
+[terminal output, Test D: after "kill 1" the processor container showed "Up 9 seconds"]
+```
+
+**Used for:** Interpreting the four failure tests; finding the source rate limit and changing the poll interval from 5 to 7 seconds; writing README.md, docs/RUNBOOK.md and docs/DECISIONS.md.
+
+---
+
+## 2026-11-12, Prompts 86 to 89 (Wrap-up)
+
+```
+yes
+```
+```
+Actually I shut the lid down because I went to eat dinner
+```
+```
+[terminal output: ls docs/images, 14 screenshot files]
+```
+```
+yes update prompt.md for me
+```
+
+**Used for:** Explaining the one-hour gap in the traffic pulse (laptop suspended); checking screenshot names; this log update.
+
+---

@@ -1,0 +1,40 @@
+producer  | 2026-11-12 21:42:25,776 INFO Poll 1794519745501: 219 aircraft sent, 0 not yet confirmed                 (total delivered 943170, failed 0)
+producer  | 2026-11-12 21:42:30,772 INFO Poll 1794519750501: 219 aircraft sent, 0 not yet confirmed                 (total delivered 943389, failed 0)
+producer  | 2026-11-12 21:42:35,785 INFO Poll 1794519755501: 218 aircraft sent, 0 not yet confirmed                 (total delivered 943607, failed 0)
+producer  | 2026-11-12 21:42:40,777 INFO Poll 1794519760501: 217 aircraft sent, 0 not yet confirmed                 (total delivered 943824, failed 0)
+producer  | 2026-11-12 21:42:45,795 INFO Poll 1794519765501: 218 aircraft sent, 0 not yet confirmed                 (total delivered 944042, failed 0)
+producer  | 2026-11-12 21:42:50,756 WARNING Source unavailable (429 Client Error: Too Many Requests for url: https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250); retrying in 1 s
+producer  | 2026-11-12 21:42:51,778 WARNING Source unavailable (429 Client Error: Too Many Requests for url: https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250); retrying in 2 s
+producer  | 2026-11-12 21:42:53,801 WARNING Source unavailable (429 Client Error: Too Many Requests for url: https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250); retrying in 4 s
+producer  | 2026-11-12 21:42:57,830 WARNING Source unavailable (429 Client Error: Too Many Requests for url: https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250); retrying in 8 s
+producer  | 2026-11-12 21:43:06,206 INFO Poll 1794519786001: 218 aircraft sent, 0 not yet confirmed                 (total delivered 944260, failed 0)
+producer  | 2026-11-12 21:43:11,055 INFO Poll 1794519790502: 218 aircraft sent, 0 not yet confirmed                 (total delivered 944478, failed 0)
+producer  | 2026-11-12 21:43:15,922 INFO Poll 1794519795501: 217 aircraft sent, 0 not yet confirmed                 (total delivered 944695, failed 0)
+producer  | 2026-11-12 21:43:20,923 INFO Poll 1794519800501: 219 aircraft sent, 0 not yet confirmed                 (total delivered 944914, failed 0)
+producer  | 2026-11-12 21:43:25,911 INFO Poll 1794519805501: 219 aircraft sent, 0 not yet confirmed                 (total delivered 945133, failed 0)
+producer  | 2026-11-12 21:43:30,920 INFO Poll 1794519810501: 220 aircraft sent, 0 not yet confirmed                 (total delivered 945353, failed 0)
+producer  | 2026-11-12 21:43:35,912 INFO Poll 1794519815501: 221 aircraft sent, 0 not yet confirmed                 (total delivered 945574, failed 0)
+producer  | 2026-11-12 21:43:40,936 INFO Poll 1794519820501: 219 aircraft sent, 0 not yet confirmed                 (total delivered 945793, failed 0)
+producer  | 2026-11-12 21:43:45,910 INFO Poll 1794519825501: 218 aircraft sent, 0 not yet confirmed                 (total delivered 946011, failed 0)
+producer  | 2026-11-12 21:43:50,985 INFO Poll 1794519830501: 219 aircraft sent, 0 not yet confirmed                 (total delivered 946230, failed 0)
+producer  | 2026-11-12 21:43:55,855 WARNING Source unavailable (429 Client Error: Too Many Requests for url: https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250); retrying in 1 s
+producer  | 2026-11-12 21:43:56,880 WARNING Source unavailable (429 Client Error: Too Many Requests for url: https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250); retrying in 2 s
+producer  | 2026-11-12 21:43:58,900 WARNING Source unavailable (429 Client Error: Too Many Requests for url: https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250); retrying in 4 s
+producer  | 2026-11-12 21:44:03,186 INFO Poll 1794519842501: 222 aircraft sent, 0 not yet confirmed                 (total delivered 946452, failed 0)
+producer  | 2026-11-12 21:44:07,987 INFO Poll 1794519847501: 222 aircraft sent, 0 not yet confirmed                 (total delivered 946674, failed 0)
+producer  | 2026-11-12 21:44:13,320 INFO Poll 1794519853001: 224 aircraft sent, 0 not yet confirmed                 (total delivered 946898, failed 0)
+producer  | 2026-11-12 21:44:18,237 INFO Poll 1794519857501: 225 aircraft sent, 0 not yet confirmed                 (total delivered 947123, failed 0)
+producer  | 2026-11-12 21:44:23,116 INFO Poll 1794519862501: 225 aircraft sent, 0 not yet confirmed                 (total delivered 947348, failed 0)
+producer  | 2026-11-12 21:44:28,164 INFO Poll 1794519867501: 224 aircraft sent, 0 not yet confirmed                 (total delivered 947572, failed 0)
+producer  | 2026-11-12 21:44:33,083 INFO Poll 1794519872501: 223 aircraft sent, 0 not yet confirmed                 (total delivered 947795, failed 0)
+producer  | 2026-11-12 21:44:38,206 INFO Poll 1794519877501: 223 aircraft sent, 0 not yet confirmed                 (total delivered 948018, failed 0)
+producer  | 2026-11-12 21:44:43,325 INFO Poll 1794519883001: 222 aircraft sent, 0 not yet confirmed                 (total delivered 948240, failed 0)
+producer  | 2026-11-12 21:44:47,979 INFO Poll 1794519887501: 222 aircraft sent, 0 not yet confirmed                 (total delivered 948462, failed 0)
+producer  | 2026-11-12 21:44:52,924 WARNING Source unavailable (429 Client Error: Too Many Requests for url: https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250); retrying in 1 s
+producer  | 2026-11-12 21:44:53,944 WARNING Source unavailable (429 Client Error: Too Many Requests for url: https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250); retrying in 2 s
+producer  | 2026-11-12 21:44:55,969 WARNING Source unavailable (429 Client Error: Too Many Requests for url: https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250); retrying in 4 s
+producer  | 2026-11-12 21:45:00,324 INFO Poll 1794519900001: 222 aircraft sent, 0 not yet confirmed                 (total delivered 948684, failed 0)
+producer  | 2026-11-12 21:45:05,342 INFO Poll 1794519904500: 224 aircraft sent, 0 not yet confirmed                 (total delivered 948908, failed 0)
+producer  | 2026-11-12 21:45:10,564 INFO Poll 1794519910000: 224 aircraft sent, 0 not yet confirmed                 (total delivered 949132, failed 0)
+producer  | 2026-11-12 21:45:15,170 INFO Poll 1794519914500: 223 aircraft sent, 0 not yet confirmed                 (total delivered 949355, failed 0)
+producer  | 2026-11-12 21:45:20,061 INFO Poll 1794519919500: 223 aircraft sent, 0 not yet confirmed                 (total delivered 949578, failed 0)

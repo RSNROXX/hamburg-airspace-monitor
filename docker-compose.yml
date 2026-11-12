@@ -188,7 +188,7 @@ services:
       CENTER_LAT: "53.63"
       CENTER_LON: "9.99"
       RADIUS_NM: "250"
-      POLL_INTERVAL_S: "5"
+      POLL_INTERVAL_S: "7"
 
   # Reads from Kafka, validates and cleans, stores in Cassandra, detects circling and emergencies.
   # No container_name: several copies can run at once (docker compose up -d --scale processor=3).
@@ -208,7 +208,7 @@ services:
       CASSANDRA_HOSTS: cassandra-1,cassandra-2,cassandra-3
       CASSANDRA_KEYSPACE: airspace
       CASSANDRA_DC: dc1
-      POLL_INTERVAL_S: "5"
+      POLL_INTERVAL_S: "7"
 
   # Streamlit dashboard: http://localhost:8501. Reads only from Cassandra.
   dashboard:

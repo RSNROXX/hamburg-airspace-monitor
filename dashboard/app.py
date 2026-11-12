@@ -78,18 +78,21 @@ def show_map(live):
 
 
 def show_watchlist(live):
-    st.subheader("Turn watchlist")
-    st.caption("Aircraft turning the most over the last 10 minutes. A circling alert needs 360 degrees "
-               "and an airliner.")
+    st.subheader("Airliners closest to a circling alert")
+    st.caption("Airliners turning the most over the last 10 minutes. An alert fires at a full 360 degrees. "
+               "Helicopters and light aircraft circle as part of their work and are left out on purpose.")
     if live.empty:
         st.info("No aircraft to show yet.")
         return
-    turning = live[~live["on_ground"].astype(bool)].copy()
+    airliners = live["is_airliner"].fillna(False).astype(bool)
+    turning = live[airliners & ~live["on_ground"].astype(bool)].copy()
+    if turning.empty:
+        st.info("No airliners in the air right now.")
+        return
     turning["abs_turn"] = turning["turn_deg"].abs()
     turning = turning.sort_values("abs_turn", ascending=False).head(10)
     table = pd.DataFrame({
         "Flight": turning["flight"].fillna(turning["hex"]),
-        "Type": turning.apply(aircraft_kind, axis=1),
         "Turn": turning["turn_deg"].map(lambda t: f"{abs(t):.0f}° {'right' if t > 0 else 'left'}"),
         "Towards a full circle": (turning["abs_turn"] / 360).clip(upper=1.0),
         "Altitude (ft)": turning["alt_baro_ft"],
