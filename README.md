@@ -19,6 +19,19 @@ Built as the final project for the Data Management course (stream processing, No
 | Data quality panel | Validity, accuracy, completeness, uniqueness and timeliness of the live stream |
 | Pipeline health | Messages per second, latency (p50 and p95), and a warning when no new data arrives |
 
+## Data source
+
+Live aircraft positions come from [adsb.lol](https://adsb.lol), a community-run ADS-B network: aircraft broadcast their own position by radio several times per second, and volunteers' receivers collect it. The data is free and needs no API key.
+
+| Property | Value |
+| --- | --- |
+| Endpoint | `https://api.adsb.lol/v2/lat/53.63/lon/9.99/dist/250` |
+| Area | 250 nautical miles around Hamburg Airport (Denmark to Czechia, the Netherlands to Poland) |
+| Volume | 200 to 410 aircraft per request, depending on the time of day |
+| Access | Polled every 7 seconds; the source allows about 10 requests per minute |
+
+**Why polling counts as a real-time stream here:** adsb.lol offers no push feed, but aircraft positions change faster than the poll interval, so every request returns new real events. Positions repeated between polls are merged by the database's primary key.
+
 ## Architecture
 
 ![Architecture: producer, 3 Kafka brokers, processor, 3 Cassandra nodes, Streamlit dashboard](docs/images/01-architecture-diagram.png)
@@ -130,25 +143,34 @@ The processor checks every batch and the dashboard reports the results by qualit
 ## Project structure
 
 ```
-docker-compose.yml       all services, health checks, volumes
-producer/                polls adsb.lol and publishes to Kafka
-processor/
-  rules.py               cleaning, validation and detection rules (no Kafka, no Cassandra)
-  processor.py           Kafka consumer loop and Cassandra writes
-  tests/                 offline tests
-dashboard/
-  data.py                Cassandra queries
-  app.py                 Streamlit page
-  tests/                 offline tests
-infra/
-  kafka/                 topic creation script
-  cassandra/             keyspace and tables (CQL)
-docs/
-  DECISIONS.md           design decisions and rejected alternatives
-  RUNBOOK.md             failure scenarios with commands and observed results
-  evidence/              raw outputs from tests
-  images/                screenshots
-PROMPTS.md               AI prompts used during development (course requirement)
+hamburg-airspace-monitor/
+├── docker-compose.yml        all services, health checks, volumes
+├── .env.example              template for the Kafka cluster ID
+├── PROMPTS.md                AI prompts used during development (course requirement)
+├── producer/                 polls adsb.lol and publishes to Kafka
+│   ├── producer.py
+│   ├── Dockerfile
+│   └── requirements.txt
+├── processor/                validates, cleans, stores and detects
+│   ├── rules.py              cleaning, validation and detection rules (no Kafka, no Cassandra)
+│   ├── processor.py          Kafka consumer loop and Cassandra writes
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── tests/                offline tests
+├── dashboard/                Streamlit dashboard
+│   ├── data.py               Cassandra queries
+│   ├── app.py                page layout
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── tests/                offline tests
+├── infra/
+│   ├── kafka/                topic creation script
+│   └── cassandra/            keyspace and tables (CQL)
+└── docs/
+    ├── DECISIONS.md          design decisions and rejected alternatives
+    ├── RUNBOOK.md            failure scenarios with commands and observed results
+    ├── evidence/             raw outputs from tests
+    └── images/               screenshots
 ```
 
 ## Running the tests
@@ -183,6 +205,3 @@ Scale the processor with `docker compose up -d --scale processor=3`. Up to 6 ins
 - The airliner type list is maintained by hand and covers the common Airbus, Boeing, Embraer, Bombardier, ATR and Dash 8 types.
 - No authentication or encryption between services. Ports are published on localhost only.
 
-## Data source
-
-Aircraft positions come from [adsb.lol](https://adsb.lol), a community-run ADS-B network that provides its data free of charge.
